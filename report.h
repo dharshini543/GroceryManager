@@ -17,11 +17,11 @@ typedef struct Report
 }Report;
 
 
-void add_sales_report_item(Cart *cart, Inventory *inventory, Report * report);
+void addSalesReportItem(Cart *cart, Inventory *inventory, Report * report);
 void generateSalesReport(Cart *cart, Inventory *inventory, float totalsales, Report *report);
 void generateInventoryReport(const Inventory *inventory);
 void viewLowStockAlerts(const Inventory *inventory);
-int is_ItemId_Already_present_in_Sales_Report(Report *report, int ItemID);
+int isItemIdAlreadyPresentInSalesReport(Report *report, int ItemID);
 
 #endif // REPORT_H
 

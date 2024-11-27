@@ -4,7 +4,7 @@
 #include"cart.h"
 #include"report.h"
 
-void add_sales_report_item(Cart *cart, Inventory *inventory, Report *report)
+void addSalesReportItem(Cart *cart, Inventory *inventory, Report *report)
 {
     CartItem *current = cart->head;
     ReportItem *temp = report->head;
@@ -19,7 +19,7 @@ void add_sales_report_item(Cart *cart, Inventory *inventory, Report *report)
         InventoryItem *Item = temp1;
         if(Item != NULL )
         {
-            int check = is_ItemId_Already_present_in_Sales_Report(report, Item->itemID);
+            int check = isItemIdAlreadyPresentInSalesReport(report, Item->itemID);
             if(check == 0)
             {
                 ReportItem *newitem = (ReportItem*)malloc(sizeof(ReportItem));
@@ -55,7 +55,7 @@ void add_sales_report_item(Cart *cart, Inventory *inventory, Report *report)
     }
 }
 
-int is_ItemId_Already_present_in_Sales_Report(Report *report, int ItemID)
+int isItemIdAlreadyPresentInSalesReport(Report *report, int ItemID)
 {
     int ID = ItemID;
     int isPresent = 0;
@@ -65,6 +65,7 @@ int is_ItemId_Already_present_in_Sales_Report(Report *report, int ItemID)
         if(temp->itemID == ID)
         {
             isPresent = 1;
+            break;
         }
         else
         {
@@ -126,6 +127,8 @@ void viewLowStockAlerts(const Inventory *inventory)
 {
     InventoryItem*current = inventory->head;
     int isFirstLowStock = 1;
+    int numOfLowStock = 0;
+
     while(current != 0)
     {
         if(current->quantity < 5)
@@ -136,9 +139,14 @@ void viewLowStockAlerts(const Inventory *inventory)
                 printf("ItemID\t\tName\t\tQuantity\n");
                 isFirstLowStock = 0;
             }
+            ++numOfLowStock;
             printf("%d\t\t%s\t\t%.2f\n", current->itemID, current->name, current->quantity);
         }
         current = current->next;
+    }
+    if(!numOfLowStock)
+    {
+        printf("All stocks are above limit\n");
     }
 }
 

@@ -46,7 +46,7 @@ void generateReceipt(Cart *cart, Inventory *inventory,float DiscountAmount,Repor
         {
             printf("%d\t%s\t\t%.2f\t\t%.2f\t\t%.2f\n",++count, Item->name, Item->price, current->quantity, Item->price*current->quantity);
             FinalAmount = FinalAmount + Item->price * current->quantity;
-            add_sales_report_item(cart, inventory, report);
+            addSalesReportItem(cart, inventory, report);
             updateInventoryQuantity(temp1, current);
         }
         current = current->next;
