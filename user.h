@@ -4,8 +4,7 @@
 #define MAX_USERNAME_LENGTH 30
 #define MAX_PASSWORD_LENGTH 30
 
-// Structure to store user information
-typedef struct
+typedef struct User
 {
     char username[MAX_USERNAME_LENGTH];
     char password[MAX_PASSWORD_LENGTH];

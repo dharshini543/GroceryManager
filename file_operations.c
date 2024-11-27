@@ -3,9 +3,11 @@
 #include"inventory.h"
 #include<stdlib.h>
 
-void saveInventoryToFile(const Inventory *inventory, const char *filename) {
+void saveInventoryToFile(const Inventory *inventory, const char *filename)
+{
     FILE *file = fopen(filename, "wb");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         printf("Error: Unable to open file for saving.\n");
         return;
     }
@@ -22,9 +24,11 @@ void saveInventoryToFile(const Inventory *inventory, const char *filename) {
     printf("Inventory saved to file successfully.\n");
 }
 
-void loadInventoryFromFile(Inventory *inventory, const char *filename) {
+void loadInventoryFromFile(Inventory *inventory, const char *filename)
+{
     FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         printf("Error: Unable to open file for loading.\n");
         return;
     }
@@ -35,19 +39,24 @@ void loadInventoryFromFile(Inventory *inventory, const char *filename) {
 
     while (1) {
         InventoryItem *newitem = (InventoryItem *)malloc(sizeof(InventoryItem));
-        if (newitem == NULL) {
+        if (newitem == NULL)
+        {
             printf("Memory allocation failed.\n");
             break;
         }
-        if (fread(newitem, sizeof(InventoryItem) - sizeof(InventoryItem*), 1, file) != 1) {
+        if (fread(newitem, sizeof(InventoryItem) - sizeof(InventoryItem*), 1, file) != 1)
+        {
             free(newitem);
             break;
         }
         newitem->next = NULL;
 
-        if (inventory->head == NULL) {
+        if (inventory->head == NULL)
+        {
             inventory->head = newitem;
-        } else {
+        }
+        else
+        {
             prev->next = newitem;
         }
 
@@ -59,9 +68,11 @@ void loadInventoryFromFile(Inventory *inventory, const char *filename) {
     printf("Inventory loaded from file successfully.\n");
 }
 
-void clearInventory(Inventory *inventory) {
+void clearInventory(Inventory *inventory)
+{
     InventoryItem *current = inventory->head;
-    while (current != NULL) {
+    while (current != NULL)
+    {
         InventoryItem *temp = current;
         current = current->next;
         free(temp);

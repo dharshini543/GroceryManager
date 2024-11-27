@@ -11,7 +11,8 @@ void initializeUser(User *user, const char *username, const char *password)
 
 int loginUser(User *user, const char *username, const char *password)
 {
-    if (strcmp(user->username, username) == 0 && strcmp(user->password, password) == 0) {
+    if (strcmp(user->username, username) == 0 && strcmp(user->password, password) == 0)
+    {
         user->isLoggedIn = 1;
         printf("Login successful. Welcome, %s!\n", username);
         return 1;
@@ -23,12 +24,14 @@ int loginUser(User *user, const char *username, const char *password)
     }
 }
 
-void logoutUser(User *user) {
+void logoutUser(User *user)
+{
     user->isLoggedIn = 0;
     printf("Logout successful.\n");
 }
 
-void displayLoginScreen(User *user) {
+void displayLoginScreen(User *user)
+{
     char username[MAX_USERNAME_LENGTH];
     char password[MAX_PASSWORD_LENGTH];
 

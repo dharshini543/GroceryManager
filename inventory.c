@@ -6,10 +6,10 @@
 int addItemToInventory(Inventory *inventory)
 {
     int choice = 1;
-    InventoryItem * temp = inventory->head;
+    InventoryItem *temp = inventory->head;
     while(choice)
     {
-        InventoryItem * newitem = (InventoryItem*)malloc(sizeof(InventoryItem));
+        InventoryItem *newitem = (InventoryItem*)malloc(sizeof(InventoryItem));
         if (newitem == 0)
         {
             printf("Memory allocation failed.\n");
@@ -17,7 +17,7 @@ int addItemToInventory(Inventory *inventory)
         }
         newitem->itemID = inventory->itemCount+1;
         printf("Item name:");
-        scanf(" %[^\n]",newitem->name);
+        scanf(" %[^\n]", newitem->name);
         printf("Item Brand:");
         scanf(" %[^\n]",newitem->brand);
         printf("Item price:");
@@ -88,6 +88,7 @@ int deleteItemFromInventory(Inventory *inventory, int itemID)
     }
 
 }
+
 int updateItemDetails(Inventory *inventory, int itemID)
 {
     InventoryItem*temp = inventory->head;
@@ -100,7 +101,8 @@ int updateItemDetails(Inventory *inventory, int itemID)
     {
         temp = temp->next;
     }
-    if(temp == 0){
+    if(temp == 0)
+    {
         printf("Item not found with the given item Id.\n");
         return 0;
     }
@@ -132,22 +134,92 @@ void viewInventorySummary(const Inventory *inventory)
     {
         InventoryItem* temp = inventory->head;
         printf("Inventory Summary:\n");
-        printf("ID\tName\t\tBrand\t\t\tPrice\t\tQuantity\t\tDepartment\t\tExpiry Date\n");
+        printf("ID\t\tName\t\t\tBrand\t\t\tPrice\t\t\tQuantity\t\t\tDepartment\t\tExpiry Date\n");
         while(temp != 0)
         {
-            printf("%d\t%s\t\t%s\t\t\t%.2f\t\t\t%.2f\t\t\t%s\t\t\t%s\n", temp->itemID, temp->name, temp->brand, temp->price, temp->quantity, temp->department, temp->expiryDate);
+            printf("%d\t\t%s\t\t\t%s\t\t\t%.2f\t\t\t%.2f\t\t\t%s\t\t\t%s\n", temp->itemID, temp->name, temp->brand, temp->price, temp->quantity, temp->department, temp->expiryDate);
             temp = temp->next;
         }
     }
 }
-void sortInventory(Inventory *inventory)
+void sortInventorybyName(Inventory *inventory)
 {
+    if (inventory->head == NULL || inventory->head->next == NULL)
+    {
+        return;
+    }
 
+    InventoryItem *i, *j;
+    for (i = inventory->head; i != NULL; i = i->next)
+    {
+        for (j = i->next; j != NULL; j = j->next)
+        {
+            if (strcmp(i->name, j->name) > 0)
+            {
+                InventoryItem temp = *i;
+                *i = *j;
+                *j = temp;
+
+                InventoryItem *tempNext = i->next;
+                i->next = j->next;
+                j->next = tempNext;
+            }
+        }
+    }
+    printf("Inventory sorted by item name.\n");
+}
+
+void sortInventorybyDepartment(Inventory *inventory)
+{
+    if (inventory->head == NULL || inventory->head->next == NULL)
+    {
+        return;
+    }
+
+    InventoryItem *i, *j;
+    for (i = inventory->head; i != NULL; i = i->next) {
+        for (j = i->next; j != NULL; j = j->next) {
+            if (strcmp(i->department, j->department) > 0) {
+                InventoryItem temp = *i;
+                *i = *j;
+                *j = temp;
+
+                InventoryItem *tempNext = i->next;
+                i->next = j->next;
+                j->next = tempNext;
+            }
+        }
+    }
+    printf("Inventory sorted by item Department.\n");
+}
+
+void sortInventorybyPrice(Inventory *inventory)
+{
+    if (inventory->head == NULL || inventory->head->next == NULL)
+    {
+        return;
+    }
+
+    InventoryItem *i, *j;
+    for (i = inventory->head; i != NULL; i = i->next) {
+        for (j = i->next; j != NULL; j = j->next) {
+            if ((i->price > j->price)) {
+                InventoryItem temp = *i;
+                *i = *j;
+                *j = temp;
+
+                InventoryItem *tempNext = i->next;
+                i->next = j->next;
+                j->next = tempNext;
+            }
+        }
+    }
+    printf("Inventory sorted by item Price.\n");
 }
 
 InventoryItem* getInventoryItemByID(Inventory*inventory,int itemID)
 {
-    InventoryItem * temp1 = inventory->head;
+    InventoryItem *temp1 = inventory->head;
     while(temp1 != NULL && temp1->itemID != itemID)
     {
         temp1 = temp1->next;

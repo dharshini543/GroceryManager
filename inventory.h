@@ -13,7 +13,7 @@ typedef struct InventoryItem
     struct InventoryItem *next;
 } InventoryItem;
 
-typedef struct
+typedef struct Inventory
 {
     InventoryItem *head;
     int itemCount;
@@ -23,8 +23,10 @@ int addItemToInventory(Inventory *inventory);
 int deleteItemFromInventory(Inventory *inventory, int itemID);
 int updateItemDetails(Inventory *inventory, int itemID);
 void viewInventorySummary(const Inventory *inventory);
-void sortInventory(Inventory *inventory);
-InventoryItem* getInventoryItemByID(Inventory*inventory,int itemID);
+void sortInventorybyName(Inventory *inventory);
+void sortInventorybyDepartment(Inventory *inventory);
+void sortInventorybyPrice(Inventory *inventory);
+InventoryItem* getInventoryItemByID(Inventory*inventory, int itemID);
 
 #endif // INVENTORY_H
 
