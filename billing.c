@@ -19,16 +19,16 @@ int calculateFinalBill(Cart *cart, Inventory *inventory, float * totalsales)
     }
     else
     {
-    printf("Enter Discount in percentage\n");
-    scanf("%f", &discountRate);
+        printf("Enter Discount in percentage\n");
+        scanf("%f", &discountRate);
 
-    DiscountAmount = applyDiscount(&total, discountRate);
+        DiscountAmount = applyDiscount(&total, discountRate);
 
-    printf("Total Bill after Discount : %.2f\n", total);
+        printf("Total Bill after Discount : %.2f\n", total);
 
-    *totalsales = *totalsales + total;
+        *totalsales = *totalsales + total;
 
-    return DiscountAmount;
+        return DiscountAmount;
     }
 }
 
@@ -54,33 +54,33 @@ void generateReceipt(Cart *cart, Inventory *inventory,float DiscountAmount,Repor
     }
     else
     {
-    printf("-------------------------Receipt---------------------------\n");
-    printf("Item_No\tName\t\tPrice\t\tQuantity\tAmount\n");
-    while(current != 0)
-    {
-        InventoryItem *temp = inventory->head;
-        while(temp != NULL && temp->itemID != current->itemID)
+        printf("-------------------------Receipt---------------------------\n");
+        printf("Item_No\tName\t\tPrice\t\tQuantity\tAmount\n");
+        while(current != 0)
         {
-            temp = temp->next;
-        }
-        InventoryItem *Item = temp;
-        if(Item != NULL )
-        {
-            printf("%d\t%s\t\t%.2f\t\t%.2f\t\t%.2f\n",++count, Item->name, Item->price, current->quantity, Item->price*current->quantity);
-            FinalAmount = FinalAmount + Item->price * current->quantity;
+            InventoryItem *temp = inventory->head;
+            while(temp != NULL && temp->itemID != current->itemID)
+            {
+                temp = temp->next;
+            }
+            InventoryItem *Item = temp;
+            if(Item != NULL )
+            {
+                printf("%d\t%s\t\t%.2f\t\t%.2f\t\t%.2f\n",++count, Item->name, Item->price, current->quantity, Item->price*current->quantity);
+                FinalAmount = FinalAmount + Item->price * current->quantity;
 
-            updateInventoryQuantity(temp, current);
+                updateInventoryQuantity(temp, current);
+            }
+            current = current->next;
         }
-        current = current->next;
-    }
-    addSalesReportItem(cart, inventory, report);
-    printf("-----------------------------------------------------------\n");
-    printf("  \t\t\t\t\tTotal amount :%.2f\n", FinalAmount);
-    printf("  \t\t\t\t\tDiscount :%.2f\n", DiscountAmount);
-    printf("   \t\t\t\t\tPayableAmount :%.2f\n", FinalAmount - DiscountAmount);
+        addSalesReportItem(cart, inventory, report);
+        printf("-----------------------------------------------------------\n");
+        printf("  \t\t\t\t\tTotal amount :%.2f\n", FinalAmount);
+        printf("  \t\t\t\t\tDiscount :%.2f\n", DiscountAmount);
+        printf("   \t\t\t\t\tPayableAmount :%.2f\n", FinalAmount - DiscountAmount);
 
-    free(current);
-    cart->totalAmount = 0;
+        free(current);
+        cart->totalAmount = 0;
     }
 
 }
