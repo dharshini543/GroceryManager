@@ -7,21 +7,25 @@
 void addSalesReportItem(Cart *cart, Inventory *inventory, Report *report)
 {
     CartItem *current = cart->head;
-    ReportItem *temp = report->head;
+
     int count = 0;
+
     while(current != 0)
     {
-        InventoryItem *temp1 = inventory->head;
-        while(temp1 != NULL && temp1->itemID != current->itemID)
+        InventoryItem *temp = inventory->head;
+
+        while(temp != NULL && temp->itemID != current->itemID)
         {
-            temp1 = temp1->next;
+            temp = temp->next;
         }
-        InventoryItem *Item = temp1;
+        InventoryItem *Item = temp;
         if(Item != NULL )
         {
             int check = isItemIdAlreadyPresentInSalesReport(report, Item->itemID);
+
             if(check == 0)
             {
+                ReportItem *temp1 = report->head;
                 ReportItem *newitem = (ReportItem*)malloc(sizeof(ReportItem));
                 if (newitem == 0)
                 {
@@ -34,35 +38,40 @@ void addSalesReportItem(Cart *cart, Inventory *inventory, Report *report)
                 if(report->head == 0)
                 {
                     report->head = newitem;
-                    temp = newitem;
+                    temp1 = newitem;
                 }
                 else
                 {
-                    while(temp->next != 0)
+                    while(temp1->next != 0)
                     {
-                        temp = temp->next;
+                        temp1 = temp1->next;
                     }
-                    temp->next = newitem;
-                    temp = newitem;
+                    temp1->next = newitem;
+                    temp1 = newitem;
                 }
             }
             else
             {
-                temp->quantity = temp->quantity + current->quantity;
+                ReportItem *temp2 = report->head;
+                while(temp2->itemID != Item->itemID)
+                {
+                    temp2 = temp2->next;
+                }
+                temp2->quantity = temp2->quantity + current->quantity;
             }
-            current = current->next;
         }
+        current = current->next;
     }
 }
 
 int isItemIdAlreadyPresentInSalesReport(Report *report, int ItemID)
 {
-    int ID = ItemID;
     int isPresent = 0;
-    ReportItem * temp = report->head;
-    while(temp != 0)
+    ReportItem * temp1 = report->head;
+
+    while(temp1 != 0)
     {
-        if(temp->itemID == ID)
+        if(temp1->itemID == ItemID)
         {
             isPresent = 1;
             break;
@@ -71,33 +80,32 @@ int isItemIdAlreadyPresentInSalesReport(Report *report, int ItemID)
         {
             isPresent = 0;
         }
-        temp = temp->next;
+        temp1 = temp1->next;
     }
     return isPresent;
 }
 
 void generateSalesReport(Cart *cart, Inventory *inventory, float totalsales, Report *report)
 {
-    ReportItem *temp = report->head;
-    CartItem *current = cart->head;
+    ReportItem *temp1 = report->head;
     int count = 0;
     float FinalAmount = 0;
 
     printf("-----------------------Sales Report---------------------------\n");
     printf("Item_No\tItemID\tName\t\tPrice\t\tQuantity\tAmount\n");
-    while(temp != 0)
+    while(temp1 != 0)
     {
-        InventoryItem *temp1 = inventory->head;
-        while(temp1 != NULL && temp1->itemID != temp->itemID)
+        InventoryItem *temp = inventory->head;
+        while(temp != NULL && temp->itemID != temp1->itemID)
         {
-            temp1 = temp1->next;
+            temp = temp->next;
         }
-        InventoryItem *Item = temp1;
+        InventoryItem *Item = temp;
         if(Item != NULL)
         {
-            printf("%d\t%d\t%s\t\t%.2f\t\t%.2f\t\t%.2f\n",++count, Item->itemID, Item->name, Item->price, temp->quantity, Item->price * temp->quantity);
+            printf("%d\t%d\t%s\t\t%.2f\t\t%.2f\t\t%.2f\n",++count, Item->itemID, Item->name, Item->price, temp1->quantity, Item->price * temp1->quantity);
         }
-        temp = temp->next;
+        temp1 = temp1->next;
     }
     printf("---------------------------------------------------------------\n");
     printf("\t\t\t\t\t\tTotal Sales = %.2f\n",totalsales);
@@ -105,7 +113,6 @@ void generateSalesReport(Cart *cart, Inventory *inventory, float totalsales, Rep
 
 void generateInventoryReport(const Inventory *inventory)
 {
-
     InventoryItem*temp = inventory->head;
     if(inventory->head == 0)
     {
@@ -125,13 +132,13 @@ void generateInventoryReport(const Inventory *inventory)
 
 void viewLowStockAlerts(const Inventory *inventory)
 {
-    InventoryItem*current = inventory->head;
+    InventoryItem *temp = inventory->head;
     int isFirstLowStock = 1;
     int numOfLowStock = 0;
 
-    while(current != 0)
+    while(temp != 0)
     {
-        if(current->quantity < 5)
+        if(temp->quantity < 5)
         {
             if(isFirstLowStock)
             {
@@ -140,10 +147,11 @@ void viewLowStockAlerts(const Inventory *inventory)
                 isFirstLowStock = 0;
             }
             ++numOfLowStock;
-            printf("%d\t\t%s\t\t%.2f\n", current->itemID, current->name, current->quantity);
+            printf("%d\t\t%s\t\t%.2f\n", temp->itemID, temp->name, temp->quantity);
         }
-        current = current->next;
+        temp = temp->next;
     }
+
     if(!numOfLowStock)
     {
         printf("All stocks are above limit\n");

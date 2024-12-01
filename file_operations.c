@@ -1,54 +1,57 @@
-#include"file_operations.h"
-#include<stdio.h>
-#include"inventory.h"
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "file_operations.h"
+#include"enum.h"
 
-void saveInventoryToFile(const Inventory *inventory, const char *filename)
+int saveInventoryToFile(const Inventory *inventory, const char *filename)
 {
-    FILE *file = fopen(filename, "wb");
+    FILE *file = fopen(filename, "w");
     if (file == NULL)
     {
-        printf("Error: Unable to open file for saving.\n");
-        return;
+        printf("Error: Could not open file %s for writing.\n", filename);
+        return Failure;
     }
 
-    InventoryItem *current = inventory->head;
-
-    while (current != NULL)
+    InventoryItem *temp = inventory->head;
+    while (temp != NULL)
     {
-        fwrite(current, sizeof(InventoryItem) - sizeof(InventoryItem*), 1, file);
-        current = current->next;
+        fprintf(file, "%d|%s|%s|%.2f|%.2f|%s|%s\n",
+                temp->itemID, temp->name, temp->brand, temp->price,
+                temp->quantity, temp->department, temp->expiryDate);
+        temp = temp->next;
     }
 
     fclose(file);
-    printf("Inventory saved to file successfully.\n");
+    printf("Inventory successfully saved to %s.\n", filename);
+    return Success;
 }
 
-void loadInventoryFromFile(Inventory *inventory, const char *filename)
+int loadInventoryFromFile(Inventory *inventory, const char *filename)
 {
-    FILE *file = fopen(filename, "rb");
+    FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
-        printf("Error: Unable to open file for loading.\n");
-        return;
+        printf("Error: Could not open file %s for reading.\n", filename);
+        return Failure;
     }
 
-    InventoryItem *prev = NULL;
-    inventory->head = NULL;
-    inventory->itemCount = 0;
-
-    while (1) {
+    char line[256];
+    while (fgets(line, sizeof(line), file))
+    {
         InventoryItem *newitem = (InventoryItem *)malloc(sizeof(InventoryItem));
         if (newitem == NULL)
         {
             printf("Memory allocation failed.\n");
-            break;
+            fclose(file);
+            return Failure;
         }
-        if (fread(newitem, sizeof(InventoryItem) - sizeof(InventoryItem*), 1, file) != 1)
-        {
-            free(newitem);
-            break;
-        }
+
+        sscanf(line, "%d|%[^|]|%[^|]|%f|%f|%[^|]|%s",
+               &newitem->itemID, newitem->name, newitem->brand,
+               &newitem->price, &newitem->quantity,
+               newitem->department, newitem->expiryDate);
+
         newitem->next = NULL;
 
         if (inventory->head == NULL)
@@ -57,27 +60,86 @@ void loadInventoryFromFile(Inventory *inventory, const char *filename)
         }
         else
         {
-            prev->next = newitem;
+            InventoryItem *temp = inventory->head;
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            temp->next = newitem;
         }
 
-        prev = newitem;
         inventory->itemCount++;
     }
 
     fclose(file);
-    printf("Inventory loaded from file successfully.\n");
+    printf("Inventory successfully loaded from %s.\n", filename);
+    return Success;
 }
 
-void clearInventory(Inventory *inventory)
+int saveReportToFile(const Report *report, const char *filename)
 {
-    InventoryItem *current = inventory->head;
-    while (current != NULL)
+    FILE *file = fopen(filename, "w");
+    if (file == NULL)
     {
-        InventoryItem *temp = current;
-        current = current->next;
-        free(temp);
+        printf("Error: Could not open file %s for writing.\n", filename);
+        return Failure;
     }
-    inventory->head = NULL;
-    inventory->itemCount = 0;
+
+    ReportItem *temp = report->head;
+    while (temp != NULL)
+    {
+        fprintf(file, "%d|%.2f\n", temp->itemID, temp->quantity);
+        temp = temp->next;
+    }
+
+    fclose(file);
+    printf("Report successfully saved to %s.\n", filename);
+    return Success;
 }
+
+int loadReportFromFile(Report *report, const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("Error: Could not open file %s for reading.\n", filename);
+        return Failure;
+    }
+
+    char line[128];
+    while (fgets(line, sizeof(line), file))
+    {
+        ReportItem *newitem = (ReportItem *)malloc(sizeof(ReportItem));
+        if (newitem == NULL)
+        {
+            printf("Memory allocation failed.\n");
+            fclose(file);
+            return Failure;
+        }
+
+        sscanf(line, "%d|%f", &newitem->itemID, &newitem->quantity);
+
+        newitem->next = NULL;
+
+        if (report->head == NULL)
+        {
+            report->head = newitem;
+        }
+        else
+        {
+            ReportItem *temp = report->head;
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            temp->next = newitem;
+        }
+    }
+
+    fclose(file);
+    printf("Report successfully loaded from %s.\n", filename);
+    return Success;
+}
+
+
 

@@ -1,19 +1,21 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include"inventory.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "inventory.h"
+#include "enum.h"
 
 int addItemToInventory(Inventory *inventory)
 {
     int choice = 1;
     InventoryItem *temp = inventory->head;
+
     while(choice)
     {
         InventoryItem *newitem = (InventoryItem*)malloc(sizeof(InventoryItem));
         if (newitem == 0)
         {
             printf("Memory allocation failed.\n");
-            return 0;
+            return Failure;
         }
         newitem->itemID = inventory->itemCount+1;
         printf("Item name:");
@@ -50,7 +52,7 @@ int addItemToInventory(Inventory *inventory)
         printf("Want to continue...press 1\n");
         scanf("%d",&choice);
     }
-    return 1;
+    return Success;
 }
 
 int deleteItemFromInventory(Inventory *inventory, int itemID)
@@ -62,17 +64,16 @@ int deleteItemFromInventory(Inventory *inventory, int itemID)
     if (current == NULL)
     {
         printf("Inventory is Empty\n");
-        return 0;
+        return Failure;
     }
     if(inventory->head->itemID == itemID)
     {
-        InventoryItem *temp = inventory->head;
-        temp = inventory->head->next;
+        InventoryItem *temp = inventory->head->next;
         printf("%d\t%s\t\t%s\t\t%.2f\t\t%f\t\t%s\t\t%s\n", inventory->head->itemID, inventory->head->name, inventory->head->brand, inventory->head->price, inventory->head->quantity, inventory->head->department, inventory->head->expiryDate);
 
         free(inventory->head);
         inventory->head = temp;
-        return 1;
+        return Success;
     }
     else
     {
@@ -84,18 +85,18 @@ int deleteItemFromInventory(Inventory *inventory, int itemID)
         prev->next = current->next;
         printf("%d\t%s\t\t%s\t\t%.2f\t\t%f\t\t%s\t\t%s\n", current->itemID, current->name, current->brand, current->price, current->quantity, current->department, current->expiryDate);
         free(current);
-        return 1;
+        return Success;
     }
 
 }
 
 int updateItemDetails(Inventory *inventory, int itemID)
 {
-    InventoryItem*temp = inventory->head;
+    InventoryItem *temp = inventory->head;
     if(temp == 0)
     {
         printf("No Item in inventory. Please add.\n");
-        return 0;
+        return Failure;
     }
     while(temp != 0 && temp->itemID != itemID)
     {
@@ -104,7 +105,7 @@ int updateItemDetails(Inventory *inventory, int itemID)
     if(temp == 0)
     {
         printf("Item not found with the given item Id.\n");
-        return 0;
+        return Failure;
     }
 
     printf("Enter new details for the item\n");
@@ -121,7 +122,7 @@ int updateItemDetails(Inventory *inventory, int itemID)
     printf("Item ExpiryDate:");
     scanf("%s",temp->expiryDate);
 
-    return 1;
+    return Success;
 }
 
 void viewInventorySummary(const Inventory *inventory)
@@ -142,11 +143,12 @@ void viewInventorySummary(const Inventory *inventory)
         }
     }
 }
-void sortInventorybyName(Inventory *inventory)
+
+int sortInventorybyName(Inventory *inventory)
 {
     if (inventory->head == NULL || inventory->head->next == NULL)
     {
-        return;
+        return Failure;
     }
 
     InventoryItem *i, *j;
@@ -166,20 +168,23 @@ void sortInventorybyName(Inventory *inventory)
             }
         }
     }
-    printf("Inventory sorted by item name.\n");
+    return Success;
 }
 
-void sortInventorybyDepartment(Inventory *inventory)
+int sortInventorybyDepartment(Inventory *inventory)
 {
     if (inventory->head == NULL || inventory->head->next == NULL)
     {
-        return;
+        return Failure;
     }
 
     InventoryItem *i, *j;
-    for (i = inventory->head; i != NULL; i = i->next) {
-        for (j = i->next; j != NULL; j = j->next) {
-            if (strcmp(i->department, j->department) > 0) {
+    for (i = inventory->head; i != NULL; i = i->next)
+    {
+        for (j = i->next; j != NULL; j = j->next)
+        {
+            if (strcmp(i->department, j->department) > 0)
+            {
                 InventoryItem temp = *i;
                 *i = *j;
                 *j = temp;
@@ -190,20 +195,23 @@ void sortInventorybyDepartment(Inventory *inventory)
             }
         }
     }
-    printf("Inventory sorted by item Department.\n");
+    return Success;
 }
 
-void sortInventorybyPrice(Inventory *inventory)
+int sortInventorybyPrice(Inventory *inventory)
 {
     if (inventory->head == NULL || inventory->head->next == NULL)
     {
-        return;
+        return Failure;
     }
 
     InventoryItem *i, *j;
-    for (i = inventory->head; i != NULL; i = i->next) {
-        for (j = i->next; j != NULL; j = j->next) {
-            if ((i->price > j->price)) {
+    for (i = inventory->head; i != NULL; i = i->next)
+    {
+        for (j = i->next; j != NULL; j = j->next)
+        {
+            if ((i->price > j->price))
+            {
                 InventoryItem temp = *i;
                 *i = *j;
                 *j = temp;
@@ -214,17 +222,27 @@ void sortInventorybyPrice(Inventory *inventory)
             }
         }
     }
-    printf("Inventory sorted by item Price.\n");
+    return Success;
 }
 
-InventoryItem* getInventoryItemByID(Inventory*inventory,int itemID)
+int getInventoryItemByID(Inventory*inventory,int itemID)
 {
-    InventoryItem *temp1 = inventory->head;
-    while(temp1 != NULL && temp1->itemID != itemID)
+    InventoryItem *temp = inventory->head;
+    if(temp == 0)
     {
-        temp1 = temp1->next;
+        printf("No Item in inventory. Please add.\n");
+        return Failure;
     }
+    while(temp != 0 && temp->itemID != itemID)
+    {
+        temp = temp->next;
+    }
+    if(temp == 0)
+    {
+        printf("Item not found with the given item Id.\n");
+        return Failure;
+    }
+    printf("%d\t%s\t\t%s\t\t%.2f\t\t%.2f\t\t%s\t\t%s\n", temp->itemID, temp->name, temp->brand, temp->price, temp->quantity, temp->department, temp->expiryDate);
 
-    printf("%d\t%s\t\t%s\t\t%.2f\t\t%f\t\t%s\t\t%s\n", temp1->itemID, temp1->name, temp1->brand, temp1->price, temp1->quantity, temp1->department, temp1->expiryDate);
-    return temp1;
+    return Success;
 }

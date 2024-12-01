@@ -14,10 +14,11 @@ add_executable(GroceryManagement main.c
     billing.c
     report.h
     report.c
-    main1.h
-    main1.c
+    start.h
+    start.c
     file_operations.h
-    file_operations.c)
+    file_operations.c
+    enum.h)
 
 include(GNUInstallDirs)
 install(TARGETS GroceryManagement

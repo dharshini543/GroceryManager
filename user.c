@@ -4,8 +4,8 @@
 
 void initializeUser(User *user, const char *username, const char *password)
 {
-    strncpy(user->username, username, MAX_USERNAME_LENGTH - 1);
-    strncpy(user->password, password, MAX_PASSWORD_LENGTH - 1);
+    strcpy(user->username, username);
+    strcpy(user->password, password);
     user->isLoggedIn = 0;
 }
 
@@ -14,12 +14,12 @@ int loginUser(User *user, const char *username, const char *password)
     if (strcmp(user->username, username) == 0 && strcmp(user->password, password) == 0)
     {
         user->isLoggedIn = 1;
-        printf("Login successful. Welcome, %s!\n", username);
+        printf("Login successful. Welcome, %s!\n\n", username);
         return 1;
     }
     else
     {
-        printf("Login failed. Please check your credentials.\n");
+        printf("Login failed. Please check your credentials.\n\n");
         return 0;
     }
 }

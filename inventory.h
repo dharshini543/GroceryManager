@@ -23,10 +23,10 @@ int addItemToInventory(Inventory *inventory);
 int deleteItemFromInventory(Inventory *inventory, int itemID);
 int updateItemDetails(Inventory *inventory, int itemID);
 void viewInventorySummary(const Inventory *inventory);
-void sortInventorybyName(Inventory *inventory);
-void sortInventorybyDepartment(Inventory *inventory);
-void sortInventorybyPrice(Inventory *inventory);
-InventoryItem* getInventoryItemByID(Inventory*inventory, int itemID);
+int sortInventorybyName(Inventory *inventory);
+int sortInventorybyDepartment(Inventory *inventory);
+int sortInventorybyPrice(Inventory *inventory);
+int getInventoryItemByID(Inventory*inventory, int itemID);
 
 #endif // INVENTORY_H
 
